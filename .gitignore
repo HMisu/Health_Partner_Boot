@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+src/main/resources/application.properties
+src/main/resources/log4jdbc.log4j2.properties
+src/main/resources/logback-spring.xml
+src/main/java/com/bit/healthpartnerboot/api/ApiExplorer.java
