@@ -8,15 +8,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "T_MEMBER")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "TB_MEMBER")
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @Column(name = "member_seq")
+    private long seq;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -40,12 +41,18 @@ public class Member {
 
     private String role;
 
+    private boolean isEmailAuth;
+
     public MemberDTO toDTO() {
         return MemberDTO.builder()
-                .id(this.id)
+                .seq(this.seq)
                 .username(this.username)
                 .password(this.password)
                 .role(this.role)
                 .build();
+    }
+
+    public void emailVerifiedSuccess() {
+        this.isEmailAuth = true;
     }
 }

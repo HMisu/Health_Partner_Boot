@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class MemberDTO {
-    private long id;
+    private long seq;
     private String username;
     private String password;
     private String role;
@@ -17,7 +17,7 @@ public class MemberDTO {
 
     public Member toEntity() {
         return Member.builder()
-                .id(this.id)
+                .seq(this.seq)
                 .username(this.username)
                 .password(this.password)
                 .role(this.role)
