@@ -1,0 +1,35 @@
+package com.bit.healthpartnerboot.entity;
+
+import com.bit.healthpartnerboot.dto.MealType;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "TB_TODO_FOOD")
+public class TodoFood {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "todo_food_seq")
+    private Long seq;
+
+    @ManyToOne
+    @JoinColumn(name = "member_seq")
+    private Member member;
+
+    @ManyToOne
+    @JoinColumn(name = "todo_seq")
+    private Todo todo;
+
+    @Column(nullable = false)
+    private Float weight;
+
+    @Convert(converter = MealType.class)
+    private MealType mealType;
+}

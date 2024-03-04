@@ -26,7 +26,7 @@ public class CustomUserDetails implements UserDetails {
                 new GrantedAuthority() {
                     @Override
                     public String getAuthority() {
-                        return member.getRole();
+                        return member.getRole().toString();
                     }
                 }
         );
@@ -41,7 +41,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return member.getUsername();
+        return member.getEmail();
     }
 
     @Override

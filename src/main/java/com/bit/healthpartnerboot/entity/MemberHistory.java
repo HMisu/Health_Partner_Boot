@@ -1,26 +1,39 @@
 package com.bit.healthpartnerboot.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
+@EntityListeners(value = AuditingEntityListener.class)
+@Getter
 @NoArgsConstructor
-@Data
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-public class MemberHistory extends BaseEntity {
+@AllArgsConstructor
+@Builder
+@Table(name = "TB_MEMBER_HISTORY")
+public class MemberHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "history_seq")
+    private Long seq;
 
-    private String name;
+    private Integer height;
 
-    private String email;
+    private Integer weight;
+
+    private Float bmi;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Member user;
+    @JoinColumn(name = "member_seq")
+    private Member member;
+
+    @CreatedDate
+    @Column(columnDefinition = "datetime(6) default now(6)", updatable = false, nullable = false)
+    private LocalDateTime createdAt;
 }

@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 public class MemberDTO {
     private long seq;
-    private String username;
+    private String name;
     private String password;
     private String role;
     private String token;
@@ -18,9 +18,9 @@ public class MemberDTO {
     public Member toEntity() {
         return Member.builder()
                 .seq(this.seq)
-                .username(this.username)
+                .name(this.name)
                 .password(this.password)
-                .role(this.role)
+                .role(Role.ofCode(role))
                 .build();
     }
 
