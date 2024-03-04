@@ -1,5 +1,6 @@
 package com.bit.healthpartnerboot.entity;
 
+import com.bit.healthpartnerboot.dto.FoodDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -34,4 +35,16 @@ public class Food {
     private Integer foodCnt;
 
     private String imgAddress;
+
+    public FoodDTO toDTO() {
+        return FoodDTO.builder()
+                .code(this.code)
+                .upperFdGrupp(this.upperFdGrupp)
+                .fdGrupp(this.fdGrupp)
+                .name(this.name)
+                .weight(this.weight)
+                .foodCnt(this.foodCnt)
+                .imgAddress(this.imgAddress)
+                .build();
+    }
 }

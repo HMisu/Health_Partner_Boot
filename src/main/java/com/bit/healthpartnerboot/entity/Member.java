@@ -3,6 +3,7 @@ package com.bit.healthpartnerboot.entity;
 import com.bit.healthpartnerboot.converter.RoleConverter;
 import com.bit.healthpartnerboot.dto.MemberDTO;
 import com.bit.healthpartnerboot.dto.Role;
+import com.bit.healthpartnerboot.listener.MemberEntityListener;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@EntityListeners(value = MemberEntityListener.class)
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,12 +35,21 @@ public class Member {
     @Column(nullable = false)
     private Integer age;
 
+    @Column(nullable = false)
+    private Integer height;
+
+    @Column(nullable = false)
+    private Integer weight;
+
+    private Float bmi;
+
     private String imgAddress;
-    
+
     private Integer goalWater;
 
     private Integer goalPedometer;
 
+    @Column(nullable = false)
     @Convert(converter = RoleConverter.class)
     private Role role;
 

@@ -16,10 +16,11 @@ public class MemberEntityListener {
 
         Member member = (Member) o;
 
-        MemberHistory userHistory = new MemberHistory();
-        userHistory.setName(member.getUsername());
-        userHistory.setEmail(member.getEmail());
-        userHistory.setUser(member);
+        MemberHistory userHistory = MemberHistory.builder()
+                .height(member.getHeight())
+                .weight(member.getWeight())
+                .member(member)
+                .build();
         userHistoryRepository.save(userHistory);
     }
 }
