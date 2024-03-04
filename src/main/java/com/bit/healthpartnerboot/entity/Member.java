@@ -1,6 +1,8 @@
 package com.bit.healthpartnerboot.entity;
 
+import com.bit.healthpartnerboot.converter.RoleConverter;
 import com.bit.healthpartnerboot.dto.MemberDTO;
+import com.bit.healthpartnerboot.dto.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +19,7 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_seq")
-    private long seq;
+    private Long seq;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -26,29 +28,28 @@ public class Member {
     private String password;
 
     @Column(nullable = false)
-    private String username;
+    private String name;
 
     @Column(nullable = false)
-    private int age;
+    private Integer age;
 
-    @Column(nullable = false)
-    private int height;
+    private String imgAddress;
+    
+    private Integer goalWater;
 
-    @Column(nullable = false)
-    private int weight;
+    private Integer goalPedometer;
 
-    private int goalPedometer;
+    @Convert(converter = RoleConverter.class)
+    private Role role;
 
-    private String role;
-
-    private boolean isEmailAuth;
+    private Boolean isEmailAuth;
 
     public MemberDTO toDTO() {
         return MemberDTO.builder()
                 .seq(this.seq)
-                .username(this.username)
+                .name(this.name)
                 .password(this.password)
-                .role(this.role)
+                .role(this.role.getDesc())
                 .build();
     }
 

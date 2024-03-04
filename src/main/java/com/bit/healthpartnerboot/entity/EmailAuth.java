@@ -1,5 +1,6 @@
 package com.bit.healthpartnerboot.entity;
 
+import com.bit.healthpartnerboot.dto.AuthType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,7 @@ public class EmailAuth {
     @JoinColumn(name = "member_seq")
     private Member member;
 
+    @Convert(converter = AuthType.class)
     private AuthType authType;
 
     private String authToken;
