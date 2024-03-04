@@ -20,16 +20,17 @@ public class TodoFood {
     private Long seq;
 
     @ManyToOne
-    @JoinColumn(name = "member_seq")
-    private Member member;
-
-    @ManyToOne
     @JoinColumn(name = "todo_seq")
     private Todo todo;
 
     @Column(nullable = false)
     private Float weight;
 
+    @Column(nullable = false)
     @Convert(converter = MealType.class)
     private MealType mealType;
+
+    private String foodIdntCode;
+
+    private String foodCode;
 }
