@@ -33,7 +33,7 @@ public class Todo extends BaseTime {
 
     private LocalDateTime date;
 
-    @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL)
     @OrderBy("isCheck asc")
     @JsonManagedReference
     private List<CheckList> checkList;

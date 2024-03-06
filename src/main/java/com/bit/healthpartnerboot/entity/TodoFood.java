@@ -1,5 +1,6 @@
 package com.bit.healthpartnerboot.entity;
 
+import com.bit.healthpartnerboot.converter.MealTypeConverter;
 import com.bit.healthpartnerboot.dto.MealType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,7 +28,7 @@ public class TodoFood {
     private Float weight;
 
     @Column(nullable = false)
-    @Convert(converter = MealType.class)
+    @Convert(converter = MealTypeConverter.class)
     private MealType mealType;
 
     private String foodIdntCode;

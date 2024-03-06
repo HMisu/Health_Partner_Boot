@@ -19,10 +19,6 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfiguration {
     private final JwtAutheticationFilter jwtAutheticationFilter;
 
-    // 비밀번호 암호화 객체 bean 객체로 등록
-    // 비밀번호 암호화와 UsernamePassworToken의 비밀번호와 CustomUserDetails 객체의 비밀번호를 비교하기 위한 passwordEncoder 객체 생성
-    // 암호화된 비밀번호는 다시는 복호화할 수 없다.
-    // PasswordEncoder에 있는 matches(암호화되지 않은 비밀번호, 암호화된 비밀번호)메소드를 이용해서 값을 비교한다. 일치하면 true, 일치하지 않으면 false
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -35,6 +31,7 @@ public class SecurityConfiguration {
 
                 })
                 .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> {
                     httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -43,9 +40,7 @@ public class SecurityConfiguration {
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/", "/member/**").permitAll();
                     authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();
                 })
-                // filter 등록
-                // cosrFilter 동작 후 jwtAuthenticationFilter가 동작
-                .addFilterAfter(jwtAutheticationFilter, CorsFilter.class)
+                .addFilterBefore(jwtAutheticationFilter, CorsFilter.class)
                 .build();
 
     }
