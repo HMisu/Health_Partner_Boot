@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @EntityListeners(value = MemberEntityListener.class)
 @Getter
@@ -22,45 +24,46 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_seq")
     private Long seq;
-
     @Column(unique = true, nullable = false)
     private String email;
-
     @Column(nullable = false)
     private String password;
-
     @Column(nullable = false)
     private String name;
-
     @Column(nullable = false)
     private Integer age;
-
     @Column(nullable = false)
     private Integer height;
-
     @Column(nullable = false)
     private Integer weight;
-
     private Float bmi;
-
     private String imgAddress;
-
     private Integer goalWater;
-
     private Integer goalPedometer;
-
     @Column(nullable = false)
     @Convert(converter = RoleConverter.class)
     private Role role;
-
     private Boolean isEmailAuth;
+    private Boolean isActive;
+    private LocalDateTime lastLoginDate;
 
     public MemberDTO toDTO() {
         return MemberDTO.builder()
                 .seq(this.seq)
-                .name(this.name)
+                .email(this.email)
                 .password(this.password)
-                .role(this.role.getDesc())
+                .name(this.name)
+                .age(this.age)
+                .height(this.height)
+                .weight(this.weight)
+                .bmi(this.bmi)
+                .imgAddress(this.imgAddress)
+                .goalWater(this.goalWater)
+                .goalPedometer(this.goalPedometer)
+                .role(this.role.toString())
+                .isEmailAuth(this.isEmailAuth)
+                .isActive(this.isActive)
+                .lastLoginDate(this.lastLoginDate.toString())
                 .build();
     }
 

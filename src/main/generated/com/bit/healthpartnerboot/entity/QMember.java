@@ -33,7 +33,11 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath imgAddress = createString("imgAddress");
 
+    public final BooleanPath isActive = createBoolean("isActive");
+
     public final BooleanPath isEmailAuth = createBoolean("isEmailAuth");
+
+    public final DateTimePath<java.time.LocalDateTime> lastLoginDate = createDateTime("lastLoginDate", java.time.LocalDateTime.class);
 
     public final StringPath name = createString("name");
 

@@ -6,8 +6,8 @@ import java.util.Arrays;
 
 @Getter
 public enum Role {
-    ROLE_USER("사용자", "USER"),
-    ROLE_ADMIN("관리자", "ADMIN");
+    ROLE_USER("사용자", "ROLE_USER"),
+    ROLE_ADMIN("관리자", "ROLE_ADMIN");
 
     private final String desc;
     private final String legacyCode;
