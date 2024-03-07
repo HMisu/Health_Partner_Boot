@@ -1,6 +1,6 @@
 package com.bit.healthpartnerboot.dto;
 
-import com.bit.healthpartnerboot.entity.Food;
+import com.bit.healthpartnerboot.entity.MainFood;
 import lombok.*;
 
 @Getter
@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FoodDTO {
+public class MainFoodDTO {
     private String code;
     private String upperFdGrupp;
     private String fdGrupp;
@@ -17,8 +17,8 @@ public class FoodDTO {
     private Integer foodCnt;
     private String imgAddress;
 
-    public Food toEntity() {
-        return Food.builder()
+    public MainFood toEntity() {
+        return MainFood.builder()
                 .code(this.code)
                 .upperFdGrupp(this.upperFdGrupp)
                 .fdGrupp(this.fdGrupp)

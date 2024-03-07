@@ -29,7 +29,7 @@ public class QCheckList extends EntityPathBase<CheckList> {
 
     public final BooleanPath isCheck = createBoolean("isCheck");
 
-    public final NumberPath<Long> seq = createNumber("seq", Long.class);
+    public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
 
     public final StringPath text = createString("text");
 

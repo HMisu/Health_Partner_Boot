@@ -23,7 +23,7 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_seq")
-    private Long seq;
+    private Integer seq;
     @Column(unique = true, nullable = false)
     private String email;
     @Column(nullable = false)

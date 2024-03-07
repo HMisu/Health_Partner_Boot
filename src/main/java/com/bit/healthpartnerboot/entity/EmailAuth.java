@@ -22,7 +22,7 @@ public class EmailAuth {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "email_auth_seq")
-    private Long id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "member_seq")

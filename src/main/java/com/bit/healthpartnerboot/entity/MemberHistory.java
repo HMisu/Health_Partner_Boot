@@ -21,7 +21,7 @@ public class MemberHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "history_seq")
-    private Long seq;
+    private Integer seq;
 
     private Integer height;
 

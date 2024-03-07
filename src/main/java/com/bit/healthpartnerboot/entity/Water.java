@@ -16,7 +16,7 @@ public class Water extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "water_seq")
-    private Long seq;
+    private Integer seq;
 
     @ManyToOne
     @JoinColumn(name = "member_seq")
