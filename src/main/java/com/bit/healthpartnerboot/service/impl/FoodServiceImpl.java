@@ -1,7 +1,7 @@
 package com.bit.healthpartnerboot.service.impl;
 
 import com.bit.healthpartnerboot.api.MenuzenApiExplorer;
-import com.bit.healthpartnerboot.entity.Food;
+import com.bit.healthpartnerboot.entity.MainFood;
 import com.bit.healthpartnerboot.repository.FoodRepository;
 import com.bit.healthpartnerboot.service.FoodService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,7 +24,7 @@ public class FoodServiceImpl implements FoodService {
         for (int i = 1; i <= 101; i++) {
             String json = menuzenApiExplorer.getFood(String.valueOf(i));
 
-            List<Food> foods = new ArrayList<>();
+            List<MainFood> mainFoods = new ArrayList<>();
 
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -32,7 +32,7 @@ public class FoodServiceImpl implements FoodService {
                 JsonNode listNode = rootNode.path("response").path("list");
 
                 for (JsonNode itemNode : listNode) {
-                    Food food = Food.builder()
+                    MainFood mainFood = MainFood.builder()
                             .code(itemNode.get("fd_Code").asText())
                             .upperFdGrupp(itemNode.get("upper_Fd_Grupp_Nm").asText())
                             .fdGrupp(itemNode.get("fd_Grupp_Nm").asText())
@@ -42,13 +42,13 @@ public class FoodServiceImpl implements FoodService {
                             .imgAddress(itemNode.get("image_Address").asText())
                             .build();
 
-                    foods.add(food);
+                    mainFoods.add(mainFood);
                 }
             } catch (IOException e) {
                 throw new RuntimeException("Error parsing JSON to Food list", e);
             }
 
-            foodRepository.saveAllAndFlush(foods);
+            foodRepository.saveAllAndFlush(mainFoods);
         }
     }
 }

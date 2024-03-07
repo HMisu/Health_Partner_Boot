@@ -18,7 +18,7 @@ public class TodoFood {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "todo_food_seq")
-    private Long seq;
+    private Integer seq;
 
     @ManyToOne
     @JoinColumn(name = "todo_seq")

@@ -1,6 +1,6 @@
 package com.bit.healthpartnerboot.entity;
 
-import com.bit.healthpartnerboot.dto.FoodDTO;
+import com.bit.healthpartnerboot.dto.MainFoodDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -16,10 +16,10 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "TB_FOOD")
-public class Food {
+@Table(name = "TB_MAIN_FOOD")
+public class MainFood {
     @Id
-    @Column(name = "food_code")
+    @Column(name = "main_food_code")
     private String code;
 
     @Comment("대분류")
@@ -36,8 +36,8 @@ public class Food {
 
     private String imgAddress;
 
-    public FoodDTO toDTO() {
-        return FoodDTO.builder()
+    public MainFoodDTO toDTO() {
+        return MainFoodDTO.builder()
                 .code(this.code)
                 .upperFdGrupp(this.upperFdGrupp)
                 .fdGrupp(this.fdGrupp)

@@ -20,7 +20,7 @@ public class Todo extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "todo_seq")
-    private Long seq;
+    private Integer seq;
 
     @ManyToOne
     @JoinColumn(name = "member_seq")

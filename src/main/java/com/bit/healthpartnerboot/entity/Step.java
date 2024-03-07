@@ -16,7 +16,7 @@ public class Step extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "step_seq")
-    private Long seq;
+    private Integer seq;
 
     @ManyToOne
     @JoinColumn(name = "member_seq")

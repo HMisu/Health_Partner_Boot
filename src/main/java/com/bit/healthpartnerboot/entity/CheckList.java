@@ -16,7 +16,7 @@ public class CheckList extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "checklist_seq")
-    private Long seq;
+    private Integer seq;
 
     @ManyToOne
     @JoinColumn(name = "todo_seq")

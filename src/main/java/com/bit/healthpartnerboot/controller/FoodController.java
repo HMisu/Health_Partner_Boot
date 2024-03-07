@@ -1,6 +1,6 @@
 package com.bit.healthpartnerboot.controller;
 
-import com.bit.healthpartnerboot.dto.FoodDTO;
+import com.bit.healthpartnerboot.dto.MainFoodDTO;
 import com.bit.healthpartnerboot.dto.ResponseDTO;
 import com.bit.healthpartnerboot.service.FoodService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class FoodController {
 
     @PostMapping("/init")
     public ResponseEntity<?> save() {
-        ResponseDTO<FoodDTO> responseDTO = new ResponseDTO<>();
+        ResponseDTO<MainFoodDTO> responseDTO = new ResponseDTO<>();
 
         try {
             foodService.saveToDatabase();
