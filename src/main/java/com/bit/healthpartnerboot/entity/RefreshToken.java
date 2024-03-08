@@ -10,9 +10,9 @@ public class RefreshToken {
 
     @Id
     private String refreshToken;
-    private Long userId;
+    private Integer userId;
 
-    public RefreshToken(String refreshToken, Long userId) {
+    public RefreshToken(String refreshToken, Integer userId) {
         this.refreshToken = refreshToken;
         this.userId = userId;
     }

@@ -45,7 +45,7 @@ public class QMember extends EntityPathBase<Member> {
 
     public final EnumPath<com.bit.healthpartnerboot.dto.Role> role = createEnum("role", com.bit.healthpartnerboot.dto.Role.class);
 
-    public final NumberPath<Long> seq = createNumber("seq", Long.class);
+    public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
 
     public final NumberPath<Integer> weight = createNumber("weight", Integer.class);
 

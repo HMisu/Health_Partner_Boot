@@ -29,7 +29,7 @@ public class QStep extends EntityPathBase<Step> {
 
     public final QMember member;
 
-    public final NumberPath<Long> seq = createNumber("seq", Long.class);
+    public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
 
     public final NumberPath<Integer> stepNum = createNumber("stepNum", Integer.class);
 

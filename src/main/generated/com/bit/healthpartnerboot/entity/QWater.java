@@ -31,7 +31,7 @@ public class QWater extends EntityPathBase<Water> {
 
     public final QMember member;
 
-    public final NumberPath<Long> seq = createNumber("seq", Long.class);
+    public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

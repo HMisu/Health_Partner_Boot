@@ -30,7 +30,7 @@ public class QMemberHistory extends EntityPathBase<MemberHistory> {
 
     public final QMember member;
 
-    public final NumberPath<Long> seq = createNumber("seq", Long.class);
+    public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
 
     public final NumberPath<Integer> weight = createNumber("weight", Integer.class);
 
