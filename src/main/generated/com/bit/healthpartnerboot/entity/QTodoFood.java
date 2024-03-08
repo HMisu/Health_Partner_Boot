@@ -28,7 +28,7 @@ public class QTodoFood extends EntityPathBase<TodoFood> {
 
     public final EnumPath<com.bit.healthpartnerboot.dto.MealType> mealType = createEnum("mealType", com.bit.healthpartnerboot.dto.MealType.class);
 
-    public final NumberPath<Long> seq = createNumber("seq", Long.class);
+    public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
 
     public final QTodo todo;
 

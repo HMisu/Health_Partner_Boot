@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class MemberDTO {
-    private long seq;
+    private Integer seq;
     private String email;
     private String password;
     private String name;

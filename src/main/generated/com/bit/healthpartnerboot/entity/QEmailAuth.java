@@ -30,7 +30,7 @@ public class QEmailAuth extends EntityPathBase<EmailAuth> {
 
     public final DateTimePath<java.time.LocalDateTime> expireDate = createDateTime("expireDate", java.time.LocalDateTime.class);
 
-    public final NumberPath<Long> id = createNumber("id", Long.class);
+    public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
     public final QMember member;
 

@@ -10,14 +10,14 @@ import com.querydsl.core.types.Path;
 
 
 /**
- * QFood is a Querydsl query type for Food
+ * QMainFood is a Querydsl query type for MainFood
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QFood extends EntityPathBase<MainFood> {
+public class QMainFood extends EntityPathBase<MainFood> {
 
-    private static final long serialVersionUID = -816831669L;
+    private static final long serialVersionUID = -2119575004L;
 
-    public static final QFood food = new QFood("food");
+    public static final QMainFood mainFood = new QMainFood("mainFood");
 
     public final StringPath code = createString("code");
 
@@ -33,15 +33,15 @@ public class QFood extends EntityPathBase<MainFood> {
 
     public final NumberPath<Float> weight = createNumber("weight", Float.class);
 
-    public QFood(String variable) {
+    public QMainFood(String variable) {
         super(MainFood.class, forVariable(variable));
     }
 
-    public QFood(Path<? extends MainFood> path) {
+    public QMainFood(Path<? extends MainFood> path) {
         super(path.getType(), path.getMetadata());
     }
 
-    public QFood(PathMetadata metadata) {
+    public QMainFood(PathMetadata metadata) {
         super(MainFood.class, metadata);
     }
 
