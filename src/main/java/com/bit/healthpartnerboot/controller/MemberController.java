@@ -23,7 +23,6 @@ import java.util.Map;
 public class MemberController {
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signup")
