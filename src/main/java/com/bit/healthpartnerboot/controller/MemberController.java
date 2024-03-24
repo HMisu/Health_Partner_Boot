@@ -2,6 +2,7 @@ package com.bit.healthpartnerboot.controller;
 
 import com.bit.healthpartnerboot.dto.MemberDTO;
 import com.bit.healthpartnerboot.dto.ResponseDTO;
+import com.bit.healthpartnerboot.jwt.JwtTokenProvider;
 import com.bit.healthpartnerboot.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,8 @@ import java.util.Map;
 public class MemberController {
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody MemberDTO memberDTO) {
@@ -59,6 +62,7 @@ public class MemberController {
 
             responseDTO.setItem(loginUserDTO);
             responseDTO.setStatusCode(HttpStatus.OK.value());
+
             return ResponseEntity.ok(responseDTO);
         } catch (Exception e) {
             if (e.getMessage().equalsIgnoreCase("not exist userid")) {

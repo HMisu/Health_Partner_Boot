@@ -22,11 +22,11 @@ public class MemberDTO {
     private String imgAddress;
     private Integer goalWater;
     private Integer goalPedometer;
-    private String token;
     private String role;
     private Boolean isEmailAuth;
     private Boolean isActive;
     private String lastLoginDate;
+    private String token;
 
     public Member toEntity() {
         return Member.builder()
