@@ -6,18 +6,21 @@ import com.bit.healthpartnerboot.jwt.JwtTokenProvider;
 import com.bit.healthpartnerboot.repository.MemberRepository;
 import com.bit.healthpartnerboot.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @Override
     public MemberDTO join(MemberDTO memberDTO) {
@@ -33,17 +36,13 @@ public class MemberServiceImpl implements MemberService {
         if (loginMember.isEmpty()) {
             throw new RuntimeException("not exist userid");
         }
-
         if (!passwordEncoder.matches(memberDTO.getPassword(), loginMember.get().getPassword())) {
             throw new RuntimeException("wrong password");
         }
 
         MemberDTO loginMemberDTO = loginMember.get().toDTO();
 
-        loginMemberDTO.setLastLoginDate(LocalDateTime.now().toString());
         loginMemberDTO.setToken(jwtTokenProvider.create(loginMember.get()));
-
-        memberRepository.saveAndFlush(loginMemberDTO.toEntity());
 
         return loginMemberDTO;
     }
