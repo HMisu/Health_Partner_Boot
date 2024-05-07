@@ -1,6 +1,6 @@
 package com.bit.healthpartnerboot.configuration;
 
-import com.bit.healthpartnerboot.jwt.JwtAutheticationFilter;
+import com.bit.healthpartnerboot.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +19,7 @@ import org.springframework.web.filter.CorsFilter;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
-    private final JwtAutheticationFilter jwtAutheticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -42,7 +42,7 @@ public class SecurityConfiguration {
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/", "/member/**").permitAll();
                     authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();
                 })
-                .addFilterAfter(jwtAutheticationFilter, CorsFilter.class)
+                .addFilterAfter(jwtAuthenticationFilter, CorsFilter.class)
                 .build();
     }
 }

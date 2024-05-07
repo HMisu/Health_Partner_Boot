@@ -36,7 +36,7 @@ dependencies {
     implementation 'org.mybatis:mybatis:3.5.15'
     implementation 'org.mybatis:mybatis-spring:3.0.3'
     implementation 'com.zaxxer:HikariCP:5.0.1'
-    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
     annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'

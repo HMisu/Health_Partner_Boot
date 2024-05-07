@@ -1,0 +1,41 @@
+server:
+  port: 9090
+spring:
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: create
+    naming:
+      physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  datasource:
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/triply?serverTimezone=Asia/Seoul
+      username: root
+      password: ms1024!33
+  data:
+    redis:
+      host: redis-17942.c325.us-east-1-4.ec2.redns.redis-cloud.com
+      port: 17942
+      password: yz7a34MkKxG2l9IhAp1TwhAl4ERcDza2
+
+cloud:
+  aws:
+    s3:
+      bucket: studentmsbucket
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: AKIAW3MD73HLTHFVDEV4
+      secretKey: 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
+
+mzen:
+  secretKey: 8ZcskwShapZjaTsOEAyi%2FH6j66Q98M0c2q%2BJ6DHxWAqNqLw5KPO1dYEp8XVIYJ8YHXaRq4VDMjcCWK6N0Qn8lw%3D%3D
+
+jwt:
+  secret: XUKemfiZfrEWLtykdkjfeliwjfd59YLt5XXXkAdqZu33
