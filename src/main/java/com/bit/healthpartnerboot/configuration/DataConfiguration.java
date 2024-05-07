@@ -12,7 +12,7 @@ import org.springframework.context.annotation.PropertySource;
 import javax.sql.DataSource;
 
 @Configuration
-@PropertySource("classpath:/application.properties")
+@PropertySource("classpath:/application.yml")
 @RequiredArgsConstructor
 public class DataConfiguration {
     private final ApplicationContext applicationContext;

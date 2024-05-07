@@ -7,11 +7,10 @@ import com.bit.healthpartnerboot.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -102,6 +101,32 @@ public class MemberController {
         } catch (Exception e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setErrorCode(101);
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @GetMapping("/signout")
+    public ResponseEntity<?> signout() {
+        ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
+
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null) {
+                String username = authentication.getName();
+                jwtTokenProvider.deleteRefreshToken(username);
+            }
+
+            Map<String, String> msgMap = new HashMap<>();
+            msgMap.put("logoutMsg", "logout success");
+
+            responseDTO.setItem(msgMap);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok(responseDTO);
+        } catch (Exception e) {
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setErrorCode(202);
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);
         }

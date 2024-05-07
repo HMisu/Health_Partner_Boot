@@ -43,8 +43,6 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath password = createString("password");
 
-    public final StringPath refreshToken = createString("refreshToken");
-
     public final EnumPath<com.bit.healthpartnerboot.dto.Role> role = createEnum("role", com.bit.healthpartnerboot.dto.Role.class);
 
     public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
