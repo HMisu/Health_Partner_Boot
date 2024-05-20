@@ -3,7 +3,7 @@ package com.bit.healthpartnerboot.service.impl;
 import com.bit.healthpartnerboot.dto.MemberDTO;
 import com.bit.healthpartnerboot.entity.CustomUserDetails;
 import com.bit.healthpartnerboot.entity.Member;
-import com.bit.healthpartnerboot.repository.MemberRepository;
+import com.bit.healthpartnerboot.repository.jpa.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

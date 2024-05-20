@@ -35,13 +35,13 @@ public class QMember extends EntityPathBase<Member> {
 
     public final BooleanPath isActive = createBoolean("isActive");
 
-    public final BooleanPath isEmailAuth = createBoolean("isEmailAuth");
-
     public final DateTimePath<java.time.LocalDateTime> lastLoginDate = createDateTime("lastLoginDate", java.time.LocalDateTime.class);
 
     public final StringPath name = createString("name");
 
     public final StringPath password = createString("password");
+
+    public final StringPath provider = createString("provider");
 
     public final EnumPath<com.bit.healthpartnerboot.dto.Role> role = createEnum("role", com.bit.healthpartnerboot.dto.Role.class);
 

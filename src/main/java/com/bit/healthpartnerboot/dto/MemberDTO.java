@@ -23,7 +23,7 @@ public class MemberDTO {
     private Integer goalWater;
     private Integer goalPedometer;
     private String role;
-    private Boolean isEmailAuth;
+    private String provider;
     private Boolean isActive;
     private String lastLoginDate;
     private String token;
@@ -42,7 +42,7 @@ public class MemberDTO {
                 .goalWater(this.goalWater)
                 .goalPedometer(this.goalPedometer)
                 .role(Role.ofCode(role))
-                .isEmailAuth(this.isEmailAuth)
+                .provider(this.provider)
                 .isActive(this.isActive)
                 .lastLoginDate(LocalDateTime.parse(this.lastLoginDate))
                 .build();
