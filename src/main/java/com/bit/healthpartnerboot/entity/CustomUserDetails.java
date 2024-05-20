@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @NoArgsConstructor
@@ -17,6 +18,7 @@ import java.util.List;
 @Builder
 public class CustomUserDetails implements UserDetails {
     private Member member;
+    private Map<String, Object> attributes;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -26,7 +28,7 @@ public class CustomUserDetails implements UserDetails {
                 new GrantedAuthority() {
                     @Override
                     public String getAuthority() {
-                        return member.getRole().toString();
+                        return member.getRole().getLegacyCode();
                     }
                 }
         );
