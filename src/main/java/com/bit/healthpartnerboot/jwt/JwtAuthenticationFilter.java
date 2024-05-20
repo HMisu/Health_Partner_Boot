@@ -1,71 +1,89 @@
 package com.bit.healthpartnerboot.jwt;
 
-import com.bit.healthpartnerboot.entity.Member;
-import com.bit.healthpartnerboot.entity.Tokens;
-import com.bit.healthpartnerboot.repository.MemberRepository;
+import com.bit.healthpartnerboot.repository.redis.RefreshTokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
-    private final MemberRepository memberRepository;
+    private final UserDetailsService userDetailsService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    private String parseBearerToken(HttpServletRequest request) {
+    public String parseBearerToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
+
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
+
         return null;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String accessToken = parseBearerToken(request);
-            if (accessToken != null && !accessToken.equalsIgnoreCase("null")) {
-                // Access Token 유효성 검사
-                if (jwtTokenProvider.validateToken(accessToken)) {
-                    String refreshToken = request.getHeader("refreshToken");
-                    if (refreshToken != null && jwtTokenProvider.validateRefreshToken(refreshToken)) {
-                        // Refresh Token이 유효한 경우, 해당하는 Member 정보를 가져옴
-                        String username = jwtTokenProvider.extractUsernameFromToken(refreshToken);
-                        Member member = memberRepository.findByEmail(username)
-                                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
-                        // 새로운 액세스 토큰을 생성하여 응답 헤더에 추가
-                        Tokens tokens = jwtTokenProvider.create(member);
-                        response.setHeader("Authorization", "Bearer " + tokens.getAccessToken());
+
+            // 토큰 값이 있으면 토큰 값이 담기고
+            // 없으면 null이 담긴다.
+            String token = parseBearerToken(request);
+            log.info("Parsed Token: {}", token);
+            // access 토큰 블랙리스트에 있는지 검사
+            // 이미 로그아웃한 토큰인지
+            if (jwtTokenProvider.isLogout(token)) {
+                throw new RuntimeException("access token is expired");
+            }
+
+            // 토큰 검사 및 security context 등록
+            if (token != null && !token.equalsIgnoreCase("null")) {
+                if (jwtTokenProvider.validateToken(token)) {
+                    String email = jwtTokenProvider.validateAndGetUsername(token);
+                    log.info("Validated Email: {}", email);
+
+                    String refreshToken = refreshTokenRepository.findByMemberEmail(email).getRefreshToken();
+                    log.info("Retrieved Refresh Token: {}", refreshToken);
+
+                    if (jwtTokenProvider.validateToken(refreshToken)) {
+                        String newAccessToken = jwtTokenProvider.createAccessToken(email);
+                        response.setHeader("Authorization", newAccessToken);
+                        log.info("New Access Token: {}", newAccessToken);
+                        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+                        // 유효성 검사 완료된 토큰 시큐리티에 인증된 사용자로 등록
+                        AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities()
+                        );
+
+                        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContext securityContext = SecurityContextHolder.getContext();
+                        securityContext.setAuthentication(authenticationToken);
+                        SecurityContextHolder.setContext(securityContext);
                     } else {
-                        // Refresh Token이 유효하지 않은 경우
-                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Refresh token is invalid");
-                        return;
+                        refreshTokenRepository.deleteByMemberEmail(email);
+                        throw new RuntimeException("Refresh token is invalid");
                     }
                 }
-            } else if (request.getRequestURI().equals("/logout")) { // 로그아웃 요청이 들어온 경우
-                // 로그아웃 처리를 위한 로직 추가
-                // 여기서 사용자의 access token과 refresh token을 만료시키거나 삭제합니다.
-                // 예를 들어, jwtTokenProvider.expireAccessToken(username) 메소드를 호출하여 access token을 만료시키고,
-                // jwtTokenProvider.deleteRefreshToken(refreshToken) 메소드를 호출하여 refresh token을 삭제합니다.
-
-                // 로그아웃이 성공적으로 처리되었다면 응답을 반환하거나 리다이렉트할 수 있습니다.
-                response.setStatus(HttpServletResponse.SC_OK);
-                return;
             }
         } catch (Exception e) {
-            // 예외 처리
-            logger.error("Error processing authentication filter: " + e.getMessage());
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
-            return;
+            log.info("error log={}", e.getMessage());
         }
 
         filterChain.doFilter(request, response);

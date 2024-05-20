@@ -1,11 +1,13 @@
 server:
   port: 9090
 spring:
+  profiles:
+    include: oauth
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     naming:
       physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
@@ -15,7 +17,7 @@ spring:
   datasource:
     hikari:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://localhost:3306/triply?serverTimezone=Asia/Seoul
+      jdbc-url: jdbc:mysql://localhost:3306/health_partner?serverTimezone=Asia/Seoul
       username: root
       password: ms1024!33
   data:
@@ -23,6 +25,9 @@ spring:
       host: redis-17942.c325.us-east-1-4.ec2.redns.redis-cloud.com
       port: 17942
       password: yz7a34MkKxG2l9IhAp1TwhAl4ERcDza2
+    mongodb:
+      uri: mongodb+srv://jagalji33:xUWcAX8djGrNKxyc@cluster0.miahl92.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      database: HealthPartnerDB
 
 cloud:
   aws:
@@ -39,3 +44,9 @@ mzen:
 
 jwt:
   secret: XUKemfiZfrEWLtykdkjfeliwjfd59YLt5XXXkAdqZu33
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG

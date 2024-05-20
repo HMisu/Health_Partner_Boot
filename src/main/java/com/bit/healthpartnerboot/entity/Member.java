@@ -26,15 +26,10 @@ public class Member {
     private Integer seq;
     @Column(unique = true, nullable = false)
     private String email;
-    @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
     private Integer age;
-    @Column(nullable = false)
     private Integer height;
-    @Column(nullable = false)
     private Integer weight;
     private Float bmi;
     private String imgAddress;
@@ -43,7 +38,7 @@ public class Member {
     @Column(nullable = false)
     @Convert(converter = RoleConverter.class)
     private Role role;
-    private Boolean isEmailAuth;
+    private String provider;
     private Boolean isActive;
     private LocalDateTime lastLoginDate;
 
@@ -61,14 +56,9 @@ public class Member {
                 .goalWater(this.goalWater)
                 .goalPedometer(this.goalPedometer)
                 .role(this.role.toString())
-                .isEmailAuth(this.isEmailAuth)
+                .provider(this.provider)
                 .isActive(this.isActive)
                 .lastLoginDate(this.lastLoginDate.toString())
                 .build();
     }
-
-    public void emailVerifiedSuccess() {
-        this.isEmailAuth = true;
-    }
-
 }

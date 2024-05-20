@@ -1,11 +1,13 @@
 package com.bit.healthpartnerboot.jwt;
 
-import com.bit.healthpartnerboot.entity.Member;
-import com.bit.healthpartnerboot.entity.Tokens;
-import com.bit.healthpartnerboot.repository.RefreshTokenRepository;
+import com.bit.healthpartnerboot.entity.LogoutToken;
+import com.bit.healthpartnerboot.entity.RefreshToken;
+import com.bit.healthpartnerboot.repository.redis.LogoutTokenRepository;
+import com.bit.healthpartnerboot.repository.redis.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -13,48 +15,56 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.UUID;
 
+@Slf4j
 @Component
-@RequiredArgsConstructor
+// @RequiredArgsConstructor
 public class JwtTokenProvider {
-    private static final String SECRET_KEY = "Yml0Y2FtcGRldm9wczR0b2RvYm9vdGFwcDUwMm1hZ2ljZWNvbGU=";
-    private static final long ACCESS_TOKEN_EXPIRATION_MS = 24 * 60 * 60 * 1000; // 1 day
-    private static final long REFRESH_TOKEN_EXPIRATION_MS = 30L * 24 * 60 * 60 * 1000;// 30 days
+    private static final long ACCESS_TOKEN_EXPIRATION_MS = 24 * 60 * 60 * 1000;
+    private static final long REFRESH_TOKEN_EXPIRATION_MS = 30L * 24 * 60 * 60 * 1000;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final LogoutTokenRepository logoutTokenRepository;
 
-    // Generate secret key using Keys.hmacShaKeyFor
-    SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    private final SecretKey key;
+    private final JwtParser parser;
 
-    // Create JwtParser directly
-    JwtParser parser = Jwts.parser().setSigningKey(key).build();
-
-    public Tokens create(Member member) {
-        Date accessTokenExpireDate = Date.from(Instant.now().plus(ACCESS_TOKEN_EXPIRATION_MS, ChronoUnit.MILLIS));
-        Date refreshTokenExpireDate = Date.from(Instant.now().plus(REFRESH_TOKEN_EXPIRATION_MS, ChronoUnit.MILLIS));
-
-        String accessToken = Jwts.builder()
-                .signWith(key, SignatureAlgorithm.HS256)
-                .subject(member.getEmail())
-                .issuer("todo boot app")
-                .issuedAt(new Date())
-                .expiration(accessTokenExpireDate)
-                .compact();
-
-        String refreshToken = UUID.randomUUID().toString();
-
-        refreshTokenRepository.saveRefreshToken(refreshToken);
-
-        return new Tokens(accessToken, refreshToken, accessTokenExpireDate, refreshTokenExpireDate);
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, RefreshTokenRepository refreshTokenRepository, LogoutTokenRepository logoutTokenRepository) {
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.logoutTokenRepository = logoutTokenRepository;
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        this.parser = Jwts.parser().setSigningKey(key).build();
     }
 
-    public boolean validateRefreshToken(String refreshToken) {
-        try {
-            Jws<Claims> claims = parser.parseClaimsJws(refreshToken);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
+    public String createAccessToken(String memberEmail) {
+        Date accessTokenExpireDate = Date.from(Instant.now().plus(ACCESS_TOKEN_EXPIRATION_MS, ChronoUnit.MILLIS));
+        return createToken(memberEmail, accessTokenExpireDate);
+    }
+
+    public void createRefreshToken(String memberEmail) {
+        Date refreshTokenExpireDate = Date.from(Instant.now().plus(REFRESH_TOKEN_EXPIRATION_MS, ChronoUnit.MILLIS));
+
+        String refreshToken = createToken(memberEmail, refreshTokenExpireDate);
+        RefreshToken redis = new RefreshToken(refreshToken, memberEmail);
+        refreshTokenRepository.save(redis);
+    }
+
+    public String createToken(String memberEmail, Date tokenExpireDate) {
+        return Jwts.builder()
+                .signWith(key, SignatureAlgorithm.HS256)
+                .subject(memberEmail)
+                .issuer("todo boot app")
+                .issuedAt(new Date())
+                .expiration(tokenExpireDate)
+                .compact();
+    }
+
+    public String validateAndGetUsername(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claims.getSubject();
     }
 
     public boolean validateToken(String token) {
@@ -66,17 +76,9 @@ public class JwtTokenProvider {
         }
     }
 
-    public String extractUsernameFromToken(String refreshToken) {
-        try {
-            Jws<Claims> claims = parser.parseClaimsJws(refreshToken);
-            return claims.getBody().getSubject();
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new RuntimeException("Refresh token is invalid");
-        }
+    public boolean isLogout(String token) {
+        LogoutToken logoutToken = logoutTokenRepository.findByAccessToken(token);
+        return logoutToken != null;
     }
 
-    public void deleteRefreshToken(String refreshToken) {
-        // Logic to delete the refresh token from the database
-        refreshTokenRepository.deleteRefreshToken(refreshToken);
-    }
 }
