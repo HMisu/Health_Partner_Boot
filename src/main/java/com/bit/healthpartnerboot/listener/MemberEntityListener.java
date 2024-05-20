@@ -3,7 +3,7 @@ package com.bit.healthpartnerboot.listener;
 
 import com.bit.healthpartnerboot.entity.Member;
 import com.bit.healthpartnerboot.entity.MemberHistory;
-import com.bit.healthpartnerboot.repository.MemberHistoryRepository;
+import com.bit.healthpartnerboot.repository.jpa.MemberHistoryRepository;
 import com.bit.healthpartnerboot.support.BeanUtils;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostUpdate;
