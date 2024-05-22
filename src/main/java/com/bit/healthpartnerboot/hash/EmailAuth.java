@@ -1,4 +1,4 @@
-package com.bit.healthpartnerboot.entity;
+package com.bit.healthpartnerboot.hash;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,11 +8,11 @@ import org.springframework.data.redis.core.index.Indexed;
 
 @Getter
 @AllArgsConstructor
-@RedisHash(value = "refreshToken", timeToLive = 60 * 60 * 24 * 3)
-public class RefreshToken {
+@RedisHash(value = "emailAuth", timeToLive = 60 * 30)
+public class EmailAuth {
     @Id
-    private String refreshToken;
+    private String verifyCode;
 
     @Indexed
-    private String memberEmail;
+    private String email;
 }

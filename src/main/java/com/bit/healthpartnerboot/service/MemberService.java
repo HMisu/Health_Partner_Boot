@@ -6,10 +6,14 @@ public interface MemberService {
     MemberDTO signUp(MemberDTO memberDTO);
 
     MemberDTO signIn(MemberDTO memberDTO);
-    
+
     MemberDTO findByMember(String email);
 
     void signOut(String email, String token);
 
-    long emailCheck(MemberDTO memberDTO);
+    long checkDuplicatedEmail(String email);
+
+    void createEmailAuthCode(String email);
+
+    void verificationEmail(String email, String code);
 }

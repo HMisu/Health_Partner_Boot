@@ -41,6 +41,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
+            String path = request.getRequestURI();
+
+            if (path.equals("/member/email") || path.equals("/member/email/verify")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             // 토큰 값이 있으면 토큰 값이 담기고
             // 없으면 null이 담긴다.
