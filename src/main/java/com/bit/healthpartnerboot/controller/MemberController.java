@@ -1,5 +1,6 @@
 package com.bit.healthpartnerboot.controller;
 
+import com.bit.healthpartnerboot.dto.EmailAuthDTO;
 import com.bit.healthpartnerboot.dto.MemberDTO;
 import com.bit.healthpartnerboot.dto.ResponseDTO;
 import com.bit.healthpartnerboot.entity.CustomUserDetails;
@@ -92,44 +93,11 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/email-check")
-    public ResponseEntity<?> emailCheck(@RequestBody MemberDTO userDTO) {
-        ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
-
-        try {
-            long emailCheck = memberService.emailCheck(userDTO);
-
-            Map<String, String> returnMap = new HashMap<>();
-
-            if (emailCheck == 0) {
-                returnMap.put("emailCheckResult", "available email");
-            } else {
-                returnMap.put("emailCheckResult", "invalid email");
-            }
-
-            responseDTO.setItem(returnMap);
-            responseDTO.setStatusCode(HttpStatus.OK.value());
-
-            return ResponseEntity.ok(responseDTO);
-        } catch (Exception e) {
-            responseDTO.setErrorMessage(e.getMessage());
-            responseDTO.setErrorCode(101);
-            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            return ResponseEntity.badRequest().body(responseDTO);
-        }
-    }
-
     @GetMapping("/signout")
     public ResponseEntity<?> signOut(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
 
         try {
-            if (customUserDetails != null) {
-                log.info(">>>>>>>>>>> " + customUserDetails.getUsername());
-            } else {
-                log.info("customUserDetail is null");
-            }
-
             String token = jwtAuthenticationFilter.parseBearerToken(request);
 
             memberService.signOut(customUserDetails.getUsername(), token);
@@ -173,9 +141,6 @@ public class MemberController {
             if (e.getMessage().equalsIgnoreCase("not exist userid")) {
                 responseDTO.setErrorCode(200);
                 responseDTO.setErrorMessage(e.getMessage());
-            } else if (e.getMessage().equalsIgnoreCase("wrong password")) {
-                responseDTO.setErrorCode(201);
-                responseDTO.setErrorMessage(e.getMessage());
             } else if (e.getMessage().equalsIgnoreCase("Refresh token is invalid")) {
                 responseDTO.setErrorCode(202);
                 responseDTO.setErrorMessage(e.getMessage());
@@ -184,6 +149,58 @@ public class MemberController {
                 responseDTO.setErrorMessage(e.getMessage());
             } else {
                 responseDTO.setErrorCode(203);
+                responseDTO.setErrorMessage(e.getMessage());
+            }
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @PostMapping("/email")
+    public ResponseEntity<?> sendEmail(@RequestBody Map<String, String> requestBody) {
+
+        ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
+
+        try {
+            String email = requestBody.get("email");
+            long emailCheck = memberService.checkDuplicatedEmail(email);
+
+            Map<String, String> returnMap = new HashMap<>();
+
+            if (emailCheck == 0) {
+                returnMap.put("emailCheckResult", "available email");
+            } else {
+                returnMap.put("emailCheckResult", "invalid email");
+            }
+
+            memberService.createEmailAuthCode(email);
+
+            responseDTO.setItem(returnMap);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok(responseDTO);
+        } catch (Exception e) {
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setErrorCode(101);
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @GetMapping("/email/verify")
+    public ResponseEntity<?> verifyEmail(@RequestBody EmailAuthDTO emailAuthDTO) {
+        ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
+
+        try {
+            Map<String, String> returnMap = new HashMap<>();
+
+            memberService.verificationEmail(emailAuthDTO.getEmail(), emailAuthDTO.getVerifyCode());
+
+            responseDTO.setItem(returnMap);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok(responseDTO);
+        } catch (Exception e) {
+            if (e.getMessage().equalsIgnoreCase("email authentication failed")) {
+                responseDTO.setErrorCode(102);
                 responseDTO.setErrorMessage(e.getMessage());
             }
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
