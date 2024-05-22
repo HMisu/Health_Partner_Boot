@@ -46,7 +46,7 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/", "/member/signup", "/member/signin", "/member/oauth/signin", "/member/signout", "/member/email-check").permitAll()
+                        .requestMatchers("/", "/member/signup", "/member/signin", "/member/oauth/signin", "/member/signout", "/member/email/**", "/member/email/verify").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

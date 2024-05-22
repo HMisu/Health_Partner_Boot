@@ -28,7 +28,17 @@ spring:
     mongodb:
       uri: mongodb+srv://jagalji33:xUWcAX8djGrNKxyc@cluster0.miahl92.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       database: HealthPartnerDB
-
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: jagalji33@gmail.com
+    password: enhybzulsmpyvuvc
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 cloud:
   aws:
     s3:
