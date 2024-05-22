@@ -1,7 +1,7 @@
 package com.bit.healthpartnerboot.jwt;
 
-import com.bit.healthpartnerboot.entity.LogoutToken;
-import com.bit.healthpartnerboot.entity.RefreshToken;
+import com.bit.healthpartnerboot.hash.LogoutToken;
+import com.bit.healthpartnerboot.hash.RefreshToken;
 import com.bit.healthpartnerboot.repository.redis.LogoutTokenRepository;
 import com.bit.healthpartnerboot.repository.redis.RefreshTokenRepository;
 import io.jsonwebtoken.*;
