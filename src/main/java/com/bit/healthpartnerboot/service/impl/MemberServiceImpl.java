@@ -112,4 +112,32 @@ public class MemberServiceImpl implements MemberService {
         String savedCode = emailService.getVerificationCode(email);
         emailService.verificationEmail(code, savedCode);
     }
+
+    @Override
+    public void verificationPassword(String email, String password) {
+        log.info("encodedPassword : " + password);
+        String enteredPassword = memberRepository.findByEmail(email).get().getPassword();
+        boolean isPasswordMatch = passwordEncoder.matches(password, enteredPassword);
+        log.info("enteredPassword : " + enteredPassword);
+        log.info("isPasswordMatch : " + isPasswordMatch);
+        if (!isPasswordMatch) {
+            throw new RuntimeException("passwords do not match");
+        }
+    }
+
+    @Override
+    public void modifyPassword(String email, String password) {
+        memberRepository.updatePasswordByEmail(email, password);
+
+    }
+
+    @Override
+    public void modifyProfile(MemberDTO memberDTO) {
+        memberRepository.updateByEmail(memberDTO.getEmail(), memberDTO.getName(), memberDTO.getAge(), memberDTO.getHeight(), memberDTO.getWeight());
+    }
+
+    @Override
+    public void modifyProfileImg(String email, String imgAddress) {
+        memberRepository.updateImgByEmail(email, imgAddress);
+    }
 }

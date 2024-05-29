@@ -23,9 +23,9 @@ public class MemberHistory {
     @Column(name = "history_seq")
     private Integer seq;
 
-    private Integer height;
+    private Float height;
 
-    private Integer weight;
+    private Float weight;
 
     private Float bmi;
 

@@ -29,7 +29,7 @@ public class QMember extends EntityPathBase<Member> {
 
     public final NumberPath<Integer> goalWater = createNumber("goalWater", Integer.class);
 
-    public final NumberPath<Integer> height = createNumber("height", Integer.class);
+    public final NumberPath<Float> height = createNumber("height", Float.class);
 
     public final StringPath imgAddress = createString("imgAddress");
 
@@ -47,7 +47,7 @@ public class QMember extends EntityPathBase<Member> {
 
     public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
 
-    public final NumberPath<Integer> weight = createNumber("weight", Integer.class);
+    public final NumberPath<Float> weight = createNumber("weight", Float.class);
 
     public QMember(String variable) {
         super(Member.class, forVariable(variable));
