@@ -26,13 +26,13 @@ public class QMemberHistory extends EntityPathBase<MemberHistory> {
 
     public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
-    public final NumberPath<Integer> height = createNumber("height", Integer.class);
+    public final NumberPath<Float> height = createNumber("height", Float.class);
 
     public final QMember member;
 
     public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
 
-    public final NumberPath<Integer> weight = createNumber("weight", Integer.class);
+    public final NumberPath<Float> weight = createNumber("weight", Float.class);
 
     public QMemberHistory(String variable) {
         this(MemberHistory.class, forVariable(variable), INITS);
