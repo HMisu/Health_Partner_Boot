@@ -16,4 +16,12 @@ public interface MemberService {
     void createEmailAuthCode(String email);
 
     void verificationEmail(String email, String code);
+
+    void verificationPassword(String email, String password);
+
+    void modifyPassword(String email, String password);
+
+    void modifyProfile(MemberDTO memberDTO);
+
+    void modifyProfileImg(String email, String imgAddress);
 }

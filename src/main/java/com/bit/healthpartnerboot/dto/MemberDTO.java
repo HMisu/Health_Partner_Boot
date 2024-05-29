@@ -16,8 +16,8 @@ public class MemberDTO {
     private String password;
     private String name;
     private Integer age;
-    private Integer height;
-    private Integer weight;
+    private Float height;
+    private Float weight;
     private Float bmi;
     private String imgAddress;
     private Integer goalWater;
@@ -27,6 +27,7 @@ public class MemberDTO {
     private Boolean isActive;
     private String lastLoginDate;
     private String token;
+    private String currentPassword;
 
     public Member toEntity() {
         return Member.builder()

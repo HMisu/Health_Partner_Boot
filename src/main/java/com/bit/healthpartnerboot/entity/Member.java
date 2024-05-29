@@ -5,10 +5,8 @@ import com.bit.healthpartnerboot.dto.MemberDTO;
 import com.bit.healthpartnerboot.dto.Role;
 import com.bit.healthpartnerboot.listener.MemberEntityListener;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Table(name = "TB_MEMBER")
-public class Member {
+public class Member implements Persistable<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_seq")
@@ -29,8 +27,8 @@ public class Member {
     private String password;
     private String name;
     private Integer age;
-    private Integer height;
-    private Integer weight;
+    private Float height;
+    private Float weight;
     private Float bmi;
     private String imgAddress;
     private Integer goalWater;
@@ -41,6 +39,23 @@ public class Member {
     private String provider;
     private Boolean isActive;
     private LocalDateTime lastLoginDate;
+
+    @Setter
+    @Transient
+    private Float originalHeight;
+    @Setter
+    @Transient
+    private Float originalWeight;
+
+    @Override
+    public boolean isNew() {
+        return this.seq == null;
+    }
+
+    @Override
+    public Integer getId() {
+        return seq;
+    }
 
     public MemberDTO toDTO() {
         return MemberDTO.builder()
