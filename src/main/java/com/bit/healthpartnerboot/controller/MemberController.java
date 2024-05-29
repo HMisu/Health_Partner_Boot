@@ -7,6 +7,7 @@ import com.bit.healthpartnerboot.entity.CustomUserDetails;
 import com.bit.healthpartnerboot.jwt.JwtAuthenticationFilter;
 import com.bit.healthpartnerboot.jwt.JwtTokenProvider;
 import com.bit.healthpartnerboot.service.MemberService;
+import com.bit.healthpartnerboot.service.S3Uploader;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -31,6 +33,7 @@ public class MemberController {
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtTokenProvider jwtTokenProvider;
+    private final S3Uploader s3Uploader;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody MemberDTO memberDTO) {
@@ -94,7 +97,8 @@ public class MemberController {
     }
 
     @GetMapping("/signout")
-    public ResponseEntity<?> signOut(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<?> signOut(HttpServletRequest request,
+                                     @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
 
         try {
@@ -121,8 +125,8 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/kakao")
-    public ResponseEntity<?> signIn(HttpServletRequest request) {
+    @GetMapping("/signin/oauth")
+    public ResponseEntity<?> signInOAuth(HttpServletRequest request) {
         ResponseDTO<MemberDTO> responseDTO = new ResponseDTO<>();
 
         try {
@@ -158,7 +162,6 @@ public class MemberController {
 
     @PostMapping("/email")
     public ResponseEntity<?> sendEmail(@RequestBody Map<String, String> requestBody) {
-
         ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
 
         try {
@@ -207,5 +210,101 @@ public class MemberController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> getProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        ResponseDTO<MemberDTO> responseDTO = new ResponseDTO<>();
+
+        try {
+            MemberDTO memberDTO = memberService.findByMember(customUserDetails.getUsername());
+            memberDTO.setPassword("");
+
+            responseDTO.setItem(memberDTO);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok(responseDTO);
+        } catch (Exception e) {
+            responseDTO.setErrorCode(100);
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @PutMapping("/pw/modify")
+    public ResponseEntity<?> modifyPassword(@RequestBody MemberDTO memberDTO) {
+        ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
+
+        try {
+            Map<String, String> returnMap = new HashMap<>();
+
+            log.info(">> getEmail : " + memberDTO.getEmail());
+            log.info(">> getCurrentPassword : " + memberDTO.getCurrentPassword());
+            log.info(">> getPassword : " + memberDTO.getPassword());
+
+            memberService.verificationPassword(memberDTO.getEmail(), memberDTO.getCurrentPassword());
+            memberService.modifyPassword(memberDTO.getEmail(), passwordEncoder.encode(memberDTO.getPassword()));
+            memberDTO.setPassword("");
+
+            responseDTO.setItem(returnMap);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok(responseDTO);
+        } catch (Exception e) {
+            if (e.getMessage().equalsIgnoreCase("passwords do not match")) {
+                responseDTO.setErrorCode(300);
+                responseDTO.setErrorMessage(e.getMessage());
+            }
+
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @PutMapping("/profile/modify")
+    public ResponseEntity<?> modifyProfile(@RequestBody MemberDTO memberDTO) {
+        ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
+
+        try {
+            Map<String, String> returnMap = new HashMap<>();
+
+            memberService.modifyProfile(memberDTO);
+
+            responseDTO.setItem(returnMap);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok(responseDTO);
+        } catch (Exception e) {
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setErrorCode(101);
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @PutMapping("/img/modify")
+    public ResponseEntity<?> modifyProfileImg(@RequestParam("image") MultipartFile file,
+                                              @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
+
+        try {
+            if (file.isEmpty()) {
+                throw new RuntimeException("파일이 비어 있습니다.");
+            }
+
+            String savedImgAddress = s3Uploader.upload(file);
+            memberService.modifyProfileImg(customUserDetails.getUsername(), savedImgAddress);
+
+            Map<String, String> returnMap = new HashMap<>();
+
+            responseDTO.setItem(returnMap);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok(responseDTO);
+        } catch (Exception e) {
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setErrorCode(101);
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
 }
 
