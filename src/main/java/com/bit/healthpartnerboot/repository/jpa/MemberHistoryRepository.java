@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface MemberHistoryRepository extends JpaRepository<MemberHistory, Long> {
-    @Query("select mh from MemberHistory mh where mh.member.email = :email")
+public interface MemberHistoryRepository extends JpaRepository<MemberHistory, Integer> {
+    @Query(value = "select mh from MemberHistory mh where mh.member.email = :email")
     List<MemberHistory> findAllByMember(String email);
 }

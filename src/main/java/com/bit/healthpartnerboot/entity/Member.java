@@ -25,14 +25,21 @@ public class Member implements Persistable<Integer> {
     @Column(unique = true, nullable = false)
     private String email;
     private String password;
+    @Setter
     private String name;
-    private Integer age;
+    private String gender;
+    @Setter
+    private int age;
+    @Setter
     private Float height;
+    @Setter
     private Float weight;
+    @Setter
     private Float bmi;
+    @Setter
+    private String activityLevel;
     private String imgAddress;
-    private Integer goalWater;
-    private Integer goalPedometer;
+    private int goalWater;
     @Column(nullable = false)
     @Convert(converter = RoleConverter.class)
     private Role role;
@@ -42,10 +49,13 @@ public class Member implements Persistable<Integer> {
 
     @Setter
     @Transient
-    private Float originalHeight;
+    private float originalHeight;
     @Setter
     @Transient
-    private Float originalWeight;
+    private float originalWeight;
+    @Setter
+    @Transient
+    private float originalBmi;
 
     @Override
     public boolean isNew() {
@@ -63,13 +73,14 @@ public class Member implements Persistable<Integer> {
                 .email(this.email)
                 .password(this.password)
                 .name(this.name)
+                .gender(this.gender)
                 .age(this.age)
                 .height(this.height)
                 .weight(this.weight)
                 .bmi(this.bmi)
+                .activityLevel(this.activityLevel)
                 .imgAddress(this.imgAddress)
                 .goalWater(this.goalWater)
-                .goalPedometer(this.goalPedometer)
                 .role(this.role.toString())
                 .provider(this.provider)
                 .isActive(this.isActive)

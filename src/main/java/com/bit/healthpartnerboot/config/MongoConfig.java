@@ -1,4 +1,4 @@
-package com.bit.healthpartnerboot.configuration;
+package com.bit.healthpartnerboot.config;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @Configuration
 @EnableMongoRepositories(basePackages = {"com.bit.healthpartnerboot.repository.mongo"})
-public class MongoConfiguration extends AbstractMongoClientConfiguration {
+public class MongoConfig extends AbstractMongoClientConfiguration {
     @Value("${spring.data.mongodb.uri}")
     private String uri;
 

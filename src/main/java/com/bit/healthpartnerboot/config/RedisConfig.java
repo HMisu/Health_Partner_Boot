@@ -1,4 +1,4 @@
-package com.bit.healthpartnerboot.configuration;
+package com.bit.healthpartnerboot.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +12,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @EnableRedisRepositories(basePackages = {"com.bit.healthpartnerboot.repository.redis"})
-public class RedisConfiguration {
+public class RedisConfig {
 
     @Value("${spring.data.redis.host}")
     private String host;

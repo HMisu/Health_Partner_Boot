@@ -22,19 +22,13 @@ public class QWater extends EntityPathBase<Water> {
 
     public static final QWater water = new QWater("water");
 
-    public final QBaseTime _super = new QBaseTime(this);
+    public final DatePath<java.time.LocalDate> date = createDate("date", java.time.LocalDate.class);
 
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
-
-    public final NumberPath<Integer> intakeWater = createNumber("intakeWater", Integer.class);
+    public final NumberPath<Integer> intake = createNumber("intake", Integer.class);
 
     public final QMember member;
 
     public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public QWater(String variable) {
         this(Water.class, forVariable(variable), INITS);

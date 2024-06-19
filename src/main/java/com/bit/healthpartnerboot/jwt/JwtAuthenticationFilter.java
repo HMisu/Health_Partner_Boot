@@ -42,54 +42,46 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String path = request.getRequestURI();
-
-            if (path.equals("/member/email") || path.equals("/member/email/verify")) {
+            if (path.equals("/member/email") || path.equals("/member/email/verify") || path.matches("/food/search") || path.matches("/todo/check")) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            // 토큰 값이 있으면 토큰 값이 담기고
-            // 없으면 null이 담긴다.
             String token = parseBearerToken(request);
-            log.info("Parsed Token: {}", token);
-            // access 토큰 블랙리스트에 있는지 검사
-            // 이미 로그아웃한 토큰인지
-            if (jwtTokenProvider.isLogout(token)) {
-                throw new RuntimeException("access token is expired");
+
+            if (token == null || token.equalsIgnoreCase("null") || jwtTokenProvider.isLogout(token)) {
+                filterChain.doFilter(request, response);
+                return;
             }
+            
+            if (jwtTokenProvider.validateToken(token)) {
+                String email = jwtTokenProvider.validateAndGetUsername(token);
+                String refreshToken = refreshTokenRepository.findByMemberEmail(email).getRefreshToken();
 
-            // 토큰 검사 및 security context 등록
-            if (token != null && !token.equalsIgnoreCase("null")) {
-                if (jwtTokenProvider.validateToken(token)) {
-                    String email = jwtTokenProvider.validateAndGetUsername(token);
-                    log.info("Validated Email: {}", email);
+                if (jwtTokenProvider.validateToken(refreshToken)) {
+                    String newAccessToken = jwtTokenProvider.createAccessToken(email);
+                    response.setHeader("Authorization", newAccessToken);
 
-                    String refreshToken = refreshTokenRepository.findByMemberEmail(email).getRefreshToken();
-                    log.info("Retrieved Refresh Token: {}", refreshToken);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-                    if (jwtTokenProvider.validateToken(refreshToken)) {
-                        String newAccessToken = jwtTokenProvider.createAccessToken(email);
-                        response.setHeader("Authorization", newAccessToken);
-                        log.info("New Access Token: {}", newAccessToken);
-                        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                    AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities()
+                    );
 
-                        // 유효성 검사 완료된 토큰 시큐리티에 인증된 사용자로 등록
-                        AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities()
-                        );
-
-                        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContext securityContext = SecurityContextHolder.getContext();
-                        securityContext.setAuthentication(authenticationToken);
-                        SecurityContextHolder.setContext(securityContext);
-                    } else {
-                        refreshTokenRepository.deleteByMemberEmail(email);
-                        throw new RuntimeException("Refresh token is invalid");
-                    }
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContext securityContext = SecurityContextHolder.getContext();
+                    securityContext.setAuthentication(authenticationToken);
+                    SecurityContextHolder.setContext(securityContext);
+                } else {
+                    refreshTokenRepository.deleteByMemberEmail(email);
+                    throw new RuntimeException("Refresh token is invalid");
                 }
             }
         } catch (Exception e) {
-            log.info("error log={}", e.getMessage());
+            log.error("Error during JWT authentication", e);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Unauthorized: " + e.getMessage());
+            return;
         }
 
         filterChain.doFilter(request, response);
