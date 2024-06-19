@@ -2,6 +2,9 @@ package com.bit.healthpartnerboot.service;
 
 import com.bit.healthpartnerboot.dto.MemberDTO;
 
+import java.util.List;
+import java.util.Map;
+
 public interface MemberService {
     MemberDTO signUp(MemberDTO memberDTO);
 
@@ -24,4 +27,8 @@ public interface MemberService {
     void modifyProfile(MemberDTO memberDTO);
 
     void modifyProfileImg(String email, String imgAddress);
+
+    List<Map<String, Object>> getBmiGraph(String email);
+
+    void modifyHeightAndWeight(String email, float height, float weight);
 }

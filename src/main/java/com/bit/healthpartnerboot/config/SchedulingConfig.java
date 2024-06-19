@@ -1,10 +1,10 @@
-package com.bit.healthpartnerboot.configuration;
+package com.bit.healthpartnerboot.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @Configuration
-public class SchedulingConfiguration {
+public class SchedulingConfig {
 
 }

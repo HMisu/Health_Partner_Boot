@@ -1,5 +1,6 @@
 package com.bit.healthpartnerboot.entity;
 
+import com.bit.healthpartnerboot.dto.MemberHistoryDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,4 +37,14 @@ public class MemberHistory {
     @CreatedDate
     @Column(columnDefinition = "datetime(6) default now(6)", updatable = false, nullable = false)
     private LocalDateTime createdAt;
+
+    public MemberHistoryDTO toDTO() {
+        return MemberHistoryDTO.builder()
+                .seq(this.seq)
+                .height(this.height)
+                .weight(this.weight)
+                .bmi(this.bmi)
+                .date(this.createdAt)
+                .build();
+    }
 }

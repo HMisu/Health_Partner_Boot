@@ -1,4 +1,4 @@
-package com.bit.healthpartnerboot.configuration;
+package com.bit.healthpartnerboot.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 @Configuration
 @PropertySource("classpath:/application.yml")
 @RequiredArgsConstructor
-public class DataConfiguration {
+public class DataConfig {
     private final ApplicationContext applicationContext;
 
     @Bean

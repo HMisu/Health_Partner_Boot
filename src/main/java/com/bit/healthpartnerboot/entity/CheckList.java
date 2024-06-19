@@ -1,5 +1,6 @@
 package com.bit.healthpartnerboot.entity;
 
+import com.bit.healthpartnerboot.dto.CheckListDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,4 +27,13 @@ public class CheckList extends BaseTime {
     private String text;
 
     private Boolean isCheck;
+
+    public CheckListDTO toDTO() {
+        return CheckListDTO.builder()
+                .seq(this.seq)
+                .todoSeq(this.todo.getSeq())
+                .text(this.text)
+                .isCheck(this.isCheck)
+                .build();
+    }
 }

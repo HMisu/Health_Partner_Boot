@@ -1,4 +1,4 @@
-package com.bit.healthpartnerboot.configuration;
+package com.bit.healthpartnerboot.config;
 
 import com.bit.healthpartnerboot.handler.CustomSuccessHandler;
 import com.bit.healthpartnerboot.jwt.JwtAuthenticationFilter;
@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfiguration {
+public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
@@ -46,7 +46,11 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/", "/member/signup", "/member/signin", "/member/oauth/signin", "/member/signout", "/member/email/**", "/member/email/verify").permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/member/signup", "/member/signin", "/member/oauth/signin", "/member/signout", "/member/email/**").permitAll()
+                        .requestMatchers("/food/search").permitAll()
+                        .requestMatchers("/todo/check").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

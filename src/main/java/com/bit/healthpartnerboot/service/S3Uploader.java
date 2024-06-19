@@ -30,26 +30,20 @@ public class S3Uploader {
     public String upload(MultipartFile multipartFile) throws IOException {
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
-        log.info("upload1");
         return upload(uploadFile);
     }
 
 
     private String upload(File uploadFile) {
-        log.info("upload2");
         String fileName = IMAGE_UPLOAD_DIR + "/" + UUID.randomUUID();
         String uploadImageUrl = putS3(uploadFile, fileName);
-        log.info("upload2");
         removeNewFile(uploadFile);
-        log.info("upload3");
         return uploadImageUrl;
     }
 
     private String putS3(File uploadFile, String fileName) {
-        log.info("putS31");
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(
                 CannedAccessControlList.PublicRead));
-        log.info("putS32");
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
@@ -62,14 +56,10 @@ public class S3Uploader {
     }
 
     private Optional<File> convert(MultipartFile file) throws IOException {
-        log.info("~~convert");
         File convertFile = new File(System.getProperty("user.dir") + "/" + file.getOriginalFilename());
-        log.info(">> " + convertFile);
         if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                log.info("~~ing");
                 fos.write(file.getBytes());
-                log.info("~~write");
             }
             return Optional.of(convertFile);
         }
