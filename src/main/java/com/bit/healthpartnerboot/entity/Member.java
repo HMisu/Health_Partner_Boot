@@ -27,6 +27,7 @@ public class Member implements Persistable<Integer> {
     private String password;
     @Setter
     private String name;
+    @Setter
     private String gender;
     @Setter
     private int age;
@@ -68,23 +69,33 @@ public class Member implements Persistable<Integer> {
     }
 
     public MemberDTO toDTO() {
-        return MemberDTO.builder()
+        MemberDTO.MemberDTOBuilder builder = MemberDTO.builder()
                 .seq(this.seq)
                 .email(this.email)
                 .password(this.password)
                 .name(this.name)
                 .gender(this.gender)
                 .age(this.age)
-                .height(this.height)
-                .weight(this.weight)
-                .bmi(this.bmi)
                 .activityLevel(this.activityLevel)
                 .imgAddress(this.imgAddress)
                 .goalWater(this.goalWater)
                 .role(this.role.toString())
                 .provider(this.provider)
                 .isActive(this.isActive)
-                .lastLoginDate(this.lastLoginDate.toString())
-                .build();
+                .lastLoginDate(this.lastLoginDate.toString());
+
+        if (height != null) {
+            builder.height(height);
+        }
+
+        if (weight != null) {
+            builder.weight(weight);
+        }
+
+        if (bmi != null) {
+            builder.bmi(bmi);
+        }
+
+        return builder.build();
     }
 }

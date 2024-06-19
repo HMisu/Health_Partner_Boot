@@ -147,6 +147,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByEmail(memberDTO.getEmail()).get();
         member.setName(memberDTO.getName());
         member.setAge(memberDTO.getAge());
+        member.setGender(memberDTO.getGender());
         member.setHeight(memberDTO.getHeight());
         member.setWeight(memberDTO.getWeight());
         member.setActivityLevel(memberDTO.getActivityLevel());

@@ -4,6 +4,7 @@ import com.bit.healthpartnerboot.dto.FoodDTO;
 import com.bit.healthpartnerboot.dto.RecommendFoodDTO;
 import com.bit.healthpartnerboot.dto.ResponseDTO;
 import com.bit.healthpartnerboot.entity.CustomUserDetails;
+import com.bit.healthpartnerboot.entity.Member;
 import com.bit.healthpartnerboot.service.FoodService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,14 @@ public class FoodController {
     @GetMapping("/recommend")
     public ResponseEntity<?> recommendFoods(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         try {
-            RecommendFoodDTO responseDTO = foodService.getRecommendedFoods(customUserDetails.getMember());
+            Member member = customUserDetails.getMember();
+
+            if (member.getAge() == 0 || member.getHeight() == null || member.getWeight() == null || member.getGender() == null) {
+                String str = "추가적인 회원 정보 입력이 필요합니다.";
+                return ResponseEntity.badRequest().body(str);
+            }
+
+            RecommendFoodDTO responseDTO = foodService.getRecommendedFoods(member);
             return ResponseEntity.ok(responseDTO);
         } catch (Exception e) {
             log.error("Error processing batch request: {}", e.getMessage());

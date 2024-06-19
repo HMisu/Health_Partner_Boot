@@ -12,8 +12,12 @@ public class MemberEntityListener {
 
     @PostLoad
     public void postLoad(Member member) {
-        member.setOriginalHeight(member.getHeight());
-        member.setOriginalWeight(member.getWeight());
+        if (member.getHeight() != null) {
+            member.setOriginalHeight(member.getHeight().floatValue());
+        }
+        if (member.getWeight() != null) {
+            member.setOriginalWeight(member.getWeight().floatValue());
+        }
     }
 
     @PrePersist
@@ -36,15 +40,20 @@ public class MemberEntityListener {
     }
 
     private boolean isMemberChanged(Member member) {
-        return member.getHeight() != member.getOriginalHeight() ||
-                member.getWeight() != member.getOriginalWeight();
+        return (member.getHeight() != null && !member.getHeight().equals(member.getOriginalHeight())) ||
+                (member.getWeight() != null && !member.getWeight().equals(member.getOriginalWeight()));
     }
 
     private void calculateAndSetBMI(Member member) {
-        float heightInMeters = member.getHeight() / 100;
-        if (heightInMeters > 0) {
-            float bmi = member.getWeight() / (heightInMeters * heightInMeters);
-            member.setBmi(bmi);
+        Float height = member.getHeight();
+        Float weight = member.getWeight();
+
+        if (height != null && weight != null) {
+            float heightInMeters = height / 100;
+            if (heightInMeters > 0) {
+                float bmi = weight / (heightInMeters * heightInMeters);
+                member.setBmi(bmi);
+            }
         }
     }
 }
