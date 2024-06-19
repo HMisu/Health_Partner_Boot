@@ -1,7 +1,9 @@
 package com.bit.healthpartnerboot.entity;
 
 import com.bit.healthpartnerboot.converter.MealTypeConverter;
+import com.bit.healthpartnerboot.dto.FoodDTO;
 import com.bit.healthpartnerboot.dto.MealType;
+import com.bit.healthpartnerboot.dto.TodoFoodDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,13 +27,21 @@ public class TodoFood {
     private Todo todo;
 
     @Column(nullable = false)
-    private Float weight;
-
-    @Column(nullable = false)
     @Convert(converter = MealTypeConverter.class)
     private MealType mealType;
 
-    private String foodIdntCode;
-
     private String foodCode;
+
+    public TodoFoodDTO toDTO(FoodDTO foodDTO) {
+        return TodoFoodDTO.builder()
+                .seq(this.seq)
+                .mealType(this.mealType.getDesc())
+                .foodCode(foodDTO.getId())
+                .name(foodDTO.getName())
+                .energy(foodDTO.getEnergy())
+                .protein(foodDTO.getEnergy())
+                .fat(foodDTO.getFat())
+                .carbohydrates(foodDTO.getCarbohydrates())
+                .build();
+    }
 }

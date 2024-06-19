@@ -24,15 +24,11 @@ public class QTodoFood extends EntityPathBase<TodoFood> {
 
     public final StringPath foodCode = createString("foodCode");
 
-    public final StringPath foodIdntCode = createString("foodIdntCode");
-
     public final EnumPath<com.bit.healthpartnerboot.dto.MealType> mealType = createEnum("mealType", com.bit.healthpartnerboot.dto.MealType.class);
 
     public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
 
     public final QTodo todo;
-
-    public final NumberPath<Float> weight = createNumber("weight", Float.class);
 
     public QTodoFood(String variable) {
         this(TodoFood.class, forVariable(variable), INITS);

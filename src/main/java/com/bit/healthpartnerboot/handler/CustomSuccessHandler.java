@@ -32,13 +32,10 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         }
 
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-        log.info("Principal에서 꺼낸 OAuth2User = {}", oAuth2User);
         String email = oAuth2User.getName();
-        log.info("Principal에서 꺼낸 email = {}", email);
 
         String accessToken = jwtTokenProvider.createAccessToken(email);
         jwtTokenProvider.createRefreshToken(email);
-        log.info("Generated Access Token: {}", accessToken);
 
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.sendRedirect("http://localhost:3000/oauth/redirected?token=" + accessToken);

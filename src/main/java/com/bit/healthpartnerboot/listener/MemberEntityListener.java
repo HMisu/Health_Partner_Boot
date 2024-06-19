@@ -5,8 +5,8 @@ import com.bit.healthpartnerboot.entity.MemberHistory;
 import com.bit.healthpartnerboot.repository.jpa.MemberHistoryRepository;
 import com.bit.healthpartnerboot.support.BeanUtils;
 import jakarta.persistence.PostLoad;
-import jakarta.persistence.PostPersist;
-import jakarta.persistence.PostUpdate;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 
 public class MemberEntityListener {
 
@@ -16,15 +16,18 @@ public class MemberEntityListener {
         member.setOriginalWeight(member.getWeight());
     }
 
-    @PostPersist
-    @PostUpdate
+    @PrePersist
+    @PreUpdate
     public void prePersistAndPreUpdate(Member member) {
         MemberHistoryRepository userHistoryRepository = BeanUtils.getBean(MemberHistoryRepository.class);
+
+        calculateAndSetBMI(member);
 
         if (isMemberChanged(member)) {
             MemberHistory userHistory = MemberHistory.builder()
                     .height(member.getHeight())
                     .weight(member.getWeight())
+                    .bmi(member.getBmi())
                     .member(member)
                     .build();
 
@@ -33,7 +36,15 @@ public class MemberEntityListener {
     }
 
     private boolean isMemberChanged(Member member) {
-        return !member.getHeight().equals(member.getOriginalHeight()) ||
-                !member.getWeight().equals(member.getOriginalWeight());
+        return member.getHeight() != member.getOriginalHeight() ||
+                member.getWeight() != member.getOriginalWeight();
+    }
+
+    private void calculateAndSetBMI(Member member) {
+        float heightInMeters = member.getHeight() / 100;
+        if (heightInMeters > 0) {
+            float bmi = member.getWeight() / (heightInMeters * heightInMeters);
+            member.setBmi(bmi);
+        }
     }
 }

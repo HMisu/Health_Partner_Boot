@@ -6,10 +6,10 @@ import java.util.Arrays;
 
 @Getter
 public enum MealType {
-    BREAKFAST("아침", "B"),
-    LUNCH("점심", "L"),
-    DINNER("저녁", "D"),
-    SNACK("간식", "S");
+    BREAKFAST("breakfast", "B"),
+    LUNCH("lunch", "L"),
+    DINNER("dinner", "D"),
+    SNACK("snack", "S");
 
     private final String desc;
     private final String legacyCode;

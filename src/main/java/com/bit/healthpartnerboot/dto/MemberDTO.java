@@ -15,13 +15,14 @@ public class MemberDTO {
     private String email;
     private String password;
     private String name;
-    private Integer age;
-    private Float height;
-    private Float weight;
-    private Float bmi;
+    private String gender;
+    private int age;
+    private float height;
+    private float weight;
+    private float bmi;
+    private String activityLevel;
     private String imgAddress;
-    private Integer goalWater;
-    private Integer goalPedometer;
+    private int goalWater;
     private String role;
     private String provider;
     private Boolean isActive;
@@ -35,13 +36,14 @@ public class MemberDTO {
                 .email(this.email)
                 .password(this.password)
                 .name(this.name)
+                .gender(this.gender)
                 .age(this.age)
                 .height(this.height)
                 .weight(this.weight)
                 .bmi(this.bmi)
+                .activityLevel(this.activityLevel)
                 .imgAddress(this.imgAddress)
                 .goalWater(this.goalWater)
-                .goalPedometer(this.goalPedometer)
                 .role(Role.ofCode(role))
                 .provider(this.provider)
                 .isActive(this.isActive)
