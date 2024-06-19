@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -211,6 +212,23 @@ public class MemberController {
         }
     }
 
+    @GetMapping("/bmi")
+    public ResponseEntity<?> getBmiGraph(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        ResponseDTO<Map<String, Object>> responseDTO = new ResponseDTO<>();
+
+        try {
+            List<Map<String, Object>> historyData = memberService.getBmiGraph(customUserDetails.getUsername());
+            responseDTO.setItems(historyData);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok(responseDTO);
+        } catch (Exception e) {
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setErrorCode(101);
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         ResponseDTO<MemberDTO> responseDTO = new ResponseDTO<>();
@@ -237,10 +255,6 @@ public class MemberController {
 
         try {
             Map<String, String> returnMap = new HashMap<>();
-
-            log.info(">> getEmail : " + memberDTO.getEmail());
-            log.info(">> getCurrentPassword : " + memberDTO.getCurrentPassword());
-            log.info(">> getPassword : " + memberDTO.getPassword());
 
             memberService.verificationPassword(memberDTO.getEmail(), memberDTO.getCurrentPassword());
             memberService.modifyPassword(memberDTO.getEmail(), passwordEncoder.encode(memberDTO.getPassword()));
@@ -306,5 +320,24 @@ public class MemberController {
         }
     }
 
+    @PutMapping("/height-weight/modify")
+    public ResponseEntity<?> modifyHeightAndWeight(@RequestBody MemberDTO memberDTO) {
+        ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
+
+        try {
+            Map<String, String> returnMap = new HashMap<>();
+
+            memberService.modifyHeightAndWeight(memberDTO.getEmail(), memberDTO.getHeight(), memberDTO.getWeight());
+
+            responseDTO.setItem(returnMap);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok(responseDTO);
+        } catch (Exception e) {
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setErrorCode(101);
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 }
 

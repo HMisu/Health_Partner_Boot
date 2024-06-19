@@ -2,9 +2,11 @@ package com.bit.healthpartnerboot.service.impl;
 
 import com.bit.healthpartnerboot.dto.MemberDTO;
 import com.bit.healthpartnerboot.entity.Member;
+import com.bit.healthpartnerboot.entity.MemberHistory;
 import com.bit.healthpartnerboot.hash.LogoutToken;
 import com.bit.healthpartnerboot.hash.RefreshToken;
 import com.bit.healthpartnerboot.jwt.JwtTokenProvider;
+import com.bit.healthpartnerboot.repository.jpa.MemberHistoryRepository;
 import com.bit.healthpartnerboot.repository.jpa.MemberRepository;
 import com.bit.healthpartnerboot.repository.redis.LogoutTokenRepository;
 import com.bit.healthpartnerboot.repository.redis.RefreshTokenRepository;
@@ -16,16 +18,18 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
+    private final MemberHistoryRepository memberHistoryRepository;
     private final EmailService emailService;
     private final LogoutTokenRepository logoutTokenRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -35,6 +39,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberDTO signUp(MemberDTO memberDTO) {
+        float heightInMeters = memberDTO.getHeight() / 100;
+        if (heightInMeters > 0) {
+            float bmi = memberDTO.getWeight() / (heightInMeters * heightInMeters);
+            memberDTO.setBmi(bmi);
+        }
+
         Member member = memberRepository.save(memberDTO.toEntity());
 
         return member.toDTO();
@@ -115,29 +125,86 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void verificationPassword(String email, String password) {
-        log.info("encodedPassword : " + password);
         String enteredPassword = memberRepository.findByEmail(email).get().getPassword();
+
         boolean isPasswordMatch = passwordEncoder.matches(password, enteredPassword);
-        log.info("enteredPassword : " + enteredPassword);
-        log.info("isPasswordMatch : " + isPasswordMatch);
+
         if (!isPasswordMatch) {
             throw new RuntimeException("passwords do not match");
         }
     }
 
     @Override
+    @Transactional
     public void modifyPassword(String email, String password) {
         memberRepository.updatePasswordByEmail(email, password);
 
     }
 
     @Override
+    @Transactional
     public void modifyProfile(MemberDTO memberDTO) {
-        memberRepository.updateByEmail(memberDTO.getEmail(), memberDTO.getName(), memberDTO.getAge(), memberDTO.getHeight(), memberDTO.getWeight());
+        Member member = memberRepository.findByEmail(memberDTO.getEmail()).get();
+        member.setName(memberDTO.getName());
+        member.setAge(memberDTO.getAge());
+        member.setHeight(memberDTO.getHeight());
+        member.setWeight(memberDTO.getWeight());
+        member.setActivityLevel(memberDTO.getActivityLevel());
+        memberRepository.save(member);
     }
 
     @Override
+    @Transactional
     public void modifyProfileImg(String email, String imgAddress) {
         memberRepository.updateImgByEmail(email, imgAddress);
+    }
+
+    @Override
+    public List<Map<String, Object>> getBmiGraph(String email) {
+        List<MemberHistory> histories = memberHistoryRepository.findAllByMember(email);
+
+        Map<String, Object> weightData = Map.of(
+                "id", "Weight",
+                "color", "hsl(156, 70%, 50%)",
+                "data", histories.stream()
+                        .map(history -> Map.of(
+                                "x", history.getCreatedAt().toLocalDate().format(DateTimeFormatter.ofPattern("M/d")),
+                                "y", history.getWeight()
+                        ))
+                        .collect(Collectors.toList())
+        );
+
+        Map<String, Object> heightData = Map.of(
+                "id", "Height",
+                "color", "hsl(275, 70%, 50%)",
+                "data", histories.stream()
+                        .map(history -> Map.of(
+                                "x", history.getCreatedAt().toLocalDate().format(DateTimeFormatter.ofPattern("M/d")),
+                                "y", history.getHeight()
+                        ))
+                        .collect(Collectors.toList())
+        );
+
+        Map<String, Object> bmiData = Map.of(
+                "id", "BMI",
+                "color", "hsl(116, 70%, 50%)",
+                "data", histories.stream()
+                        .map(history -> Map.of(
+                                "x", history.getCreatedAt().toLocalDate().format(DateTimeFormatter.ofPattern("M/d")),
+                                "y", history.getBmi()
+                        ))
+                        .collect(Collectors.toList())
+        );
+
+        return List.of(weightData, heightData, bmiData);
+    }
+
+    @Override
+    @Transactional
+    public void modifyHeightAndWeight(String email, float height, float weight) {
+        Member member = memberRepository.findByEmail(email).get();
+        member.setHeight(height);
+        member.setWeight(weight);
+        memberRepository.save(member);
     }
 }

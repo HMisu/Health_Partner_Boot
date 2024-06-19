@@ -1,6 +1,10 @@
 server:
   port: 9090
 spring:
+  cache:
+    type: redis
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
   profiles:
     include: oauth
   jpa:
@@ -27,7 +31,7 @@ spring:
       password: yz7a34MkKxG2l9IhAp1TwhAl4ERcDza2
     mongodb:
       uri: mongodb+srv://jagalji33:xUWcAX8djGrNKxyc@cluster0.miahl92.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-      database: HealthPartnerDB
+      database: HealthPartner
   mail:
     host: smtp.gmail.com
     port: 587
