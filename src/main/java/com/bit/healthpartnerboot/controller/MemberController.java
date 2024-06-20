@@ -1,6 +1,5 @@
 package com.bit.healthpartnerboot.controller;
 
-import com.bit.healthpartnerboot.dto.EmailAuthDTO;
 import com.bit.healthpartnerboot.dto.MemberDTO;
 import com.bit.healthpartnerboot.dto.ResponseDTO;
 import com.bit.healthpartnerboot.entity.CustomUserDetails;
@@ -191,13 +190,14 @@ public class MemberController {
     }
 
     @GetMapping("/email/verify")
-    public ResponseEntity<?> verifyEmail(@RequestBody EmailAuthDTO emailAuthDTO) {
+    public ResponseEntity<ResponseDTO<Map<String, String>>> verifyEmail(
+            @RequestParam String email, @RequestParam String verifyCode) {
         ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
 
         try {
             Map<String, String> returnMap = new HashMap<>();
 
-            memberService.verificationEmail(emailAuthDTO.getEmail(), emailAuthDTO.getVerifyCode());
+            memberService.verificationEmail(email, verifyCode);
 
             responseDTO.setItem(returnMap);
             responseDTO.setStatusCode(HttpStatus.OK.value());

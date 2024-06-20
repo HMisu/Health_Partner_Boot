@@ -21,7 +21,10 @@ public class EmailService {
     }
 
     public void saveVerificationCode(String email, String code) {
-        EmailAuth emailAuth = new EmailAuth(email, code);
+        EmailAuth emailAuth = EmailAuth.builder()
+                .email(email)
+                .verifyCode(code)
+                .build();
         emailAuthRepository.save(emailAuth);
     }
 }
