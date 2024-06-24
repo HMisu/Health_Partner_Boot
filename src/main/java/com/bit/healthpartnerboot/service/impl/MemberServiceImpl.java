@@ -208,4 +208,9 @@ public class MemberServiceImpl implements MemberService {
         member.setWeight(weight);
         memberRepository.save(member);
     }
+
+    @Override
+    public void deleteMember(String email) {
+        memberRepository.deleteByEmail(email);
+    }
 }
