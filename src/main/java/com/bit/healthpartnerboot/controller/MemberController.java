@@ -339,5 +339,25 @@ public class MemberController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
+    @DeleteMapping("/{email}")
+    public ResponseEntity<?> deleteMember(@PathVariable String email) {
+        ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
+
+        try {
+            Map<String, String> returnMap = new HashMap<>();
+
+            memberService.deleteMember(email);
+
+            responseDTO.setItem(returnMap);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok(responseDTO);
+        } catch (Exception e) {
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setErrorCode(101);
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 }
 

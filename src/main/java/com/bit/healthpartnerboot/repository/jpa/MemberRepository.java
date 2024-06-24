@@ -19,7 +19,7 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     @Modifying
     @Query(value = "update Member m set m.password = :password where m.email=:email")
     void updatePasswordByEmail(String email, String password);
-    
+
     @Modifying
     @Query(value = "update Member m set m.height = :height, m.weight = :weight where m.email=:email")
     void updateHeightAndWeightByEmail(String email, float height, float weight);
@@ -29,4 +29,7 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     void updateImgByEmail(String email, String img);
 
     long countByEmail(String email);
+
+    @Transactional
+    void deleteByEmail(String email);
 }
