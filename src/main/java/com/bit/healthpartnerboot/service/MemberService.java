@@ -31,4 +31,6 @@ public interface MemberService {
     List<Map<String, Object>> getBmiGraph(String email);
 
     void modifyHeightAndWeight(String email, float height, float weight);
+
+    void deleteMember(String email);
 }
