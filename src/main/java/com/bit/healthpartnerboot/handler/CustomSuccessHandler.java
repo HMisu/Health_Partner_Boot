@@ -38,6 +38,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         jwtTokenProvider.createRefreshToken(email);
 
         response.setHeader("Authorization", "Bearer " + accessToken);
-        response.sendRedirect("http://localhost:3000/oauth/redirected?token=" + accessToken);
+        response.sendRedirect("http://54.180.62.153/oauth/redirected?token=" + accessToken);
+        // response.sendRedirect("http://ec2-54-180-62-153.ap-northeast-2.compute.amazonaws.com:3000/oauth/redirected?token=" + accessToken);
+        // response.sendRedirect("http://localhost:3000/oauth/redirected?token=" + accessToken);
     }
 }

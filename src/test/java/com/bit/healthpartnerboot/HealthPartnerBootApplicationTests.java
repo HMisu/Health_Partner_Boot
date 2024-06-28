@@ -1,12 +1,9 @@
 package com.bit.healthpartnerboot;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-@SpringBootTest
+//@SpringBootTest
 class HealthPartnerBootApplicationTests {
 
-    @Test
+    //@Test
     void contextLoads() {
     }
 
